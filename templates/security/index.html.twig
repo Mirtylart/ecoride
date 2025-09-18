@@ -3,73 +3,42 @@
 {% block title %}Accueil{% endblock %}
 
 {% block body %}
+    <div class="bgimage">
+      {% include 'security/menu.html.twig' %}
+    </div>
 
-{% include 'security/menu.html.twig' %}
-
-<div class="example-wrapper">
-
-    <header>
-        <div class="header-logo">
-            <ul>
-                <li>
-                    <a class="navigation-logo" href="{{ path('app_home') }}" aria-label="EcoRide Logo">
-                        <span>EcoRide</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </header>
-
-    <main>
-        <section class="recherche-section">
-            <h2>Rechercher un itinéraire</h2>
-                <form class="form-recherche" action="{{ path('trip_list') }}" method="get">
-                    <input type="text" name="search_trip[villeDepart]" placeholder="Ville de départ" required>
-                    <input type="text" name="search_trip[villeArrivee]" placeholder="Ville d'arrivée" required>
-                    <input type="date" name="search_trip[dateDepart]" required min="{{ 'now'|date('Y-m-d') }}">
-                    <button type="submit">Rechercher</button>
-                </form>
-        </section>
+    <div class="example-wrapper">
+      <main>
         <section class="accueil-menu">
-            <div>
-                <a class="photo-accueil" href="#" aria-label="Photo d'illustration page d'Accueil">
-                    <div class="bg-accueil"></div>
-                </a>
-                <p>
-                    {% if app.user %} 
-                        Bonjour {{ app.user.username }} 
-                        <a href="{{ path('app_logout') }}">Se déconnecter</a> 
-                        {% else %} <p>Vous n’êtes pas connecté.
-                    </p> 
-                    {% endif %}
-                    <br><br>
-                    <em>EcoRide : Réduire l’impact environnemental des déplacements grâce au covoiturage.</em><br>
-                    Notre plateforme met en relation chauffeurs et passagers pour des trajets en voiture, 
-                    avec une attention particulière à l’aspect écologique grâce aux véhicules électriques.
-                </p>
-            </div>
-        </section>
+          <div>
+            <a class="photo-accueil"
+              href="#"
+              aria-label="Photo d'illustration page d'Accueil">
+              <div class="bg-accueil"></div>
+            </a>
 
-        {# Barre de recherche itinéraires (US1) #}
-        <section class="recherche-section">
-            <h2>Rechercher un itinéraire</h2>
-            {#<form class="form-recherche" action="{{ path('app_covoiturages') }}" method="get">
-                <input type="text" name="depart" placeholder="Ville de départ" required>
-                <input type="text" name="arrivee" placeholder="Ville d'arrivée" required>
-                <input type="date" name="date" required>
-                <button type="submit">Rechercher</button>
-            </form>#}
-        </section>
-    </main>
+            <br><br>
 
-    <footer>
-        <div class="footer-menu-button">
-            <ul class="footer-button">
-                <em>Pas encore fait
-                <li><button>contact</button></li>
-                <li><button>mentions légales</button></li>
-            </ul>
-        </div>
-    </footer>
-</div>
-{% endblock %}
+            <em class="Description">
+              EcoRide : Réduire l’impact environnemental des déplacements grâce au covoiturage.
+            </em>
+            <br>
+            Notre plateforme met en relation chauffeurs et passagers pour des trajets en voiture,
+            avec une attention particulière à l’aspect écologique grâce aux véhicules électriques.
+          </div>
+        </section>
+      
+        <section class="Bonjour">
+          <p>
+            <br><br>
+            {% if app.user %}
+              Bonjour {{ app.user.username }}
+              <a href="{{ path('app_logout') }}"><div class="deconnexion">Se déconnecter</div></a>
+            {% else %}
+              Vous n’êtes pas connecté.
+            {% endif %}
+          </p>
+        </section>
+      </main>
+    </div>
+  {% endblock %}

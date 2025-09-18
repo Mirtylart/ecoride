@@ -2,18 +2,20 @@
 namespace App\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
+use App\Entity\Trip;
+use App\Entity\User;
 
 #[MongoDB\Document]
 class Review
 {
     #[MongoDB\Id]
-    private $id;
+    private ?string $id = null;
 
     #[MongoDB\Field(type: 'string')]
     private string $userId;
 
-    #[MongoDB\Field(type: 'string')]
-    private string $userName;
+    #[MongoDB\Field(type: 'string', nullable: true)]
+    private ?string $userName = null;
 
     #[MongoDB\Field(type: 'string')]
     private string $userEmail;
@@ -53,6 +55,23 @@ class Review
         $this->createdAt = new \DateTime();
     }
 
+    /**
+     * Initialise une review à partir d'un Trip et d'un User
+     */
+    public static function fromTrip(Trip $trip, User $user): self
+    {
+        $review = new self();
+        $review->setUserId((string) $user->getId());
+        $review->setUserEmail($user->getEmail());
+        $review->setUserName($user->getUsername());
+        $review->setTripId($trip->getId());
+        $review->setReviewerId((int) $user->getId());
+        $review->setDriverId($trip->getDriver()->getId());
+
+        return $review;
+    }
+
+    // --- Getters / Setters ---
     public function getId(): ?string
     {
         return $this->id;
@@ -71,10 +90,10 @@ class Review
 
     public function getUserName(): string
     {
-        return $this->userName;
+        return $this->userName ?? 'Inconnu';
     }
 
-    public function setUserName(string $userName): self
+    public function setUserName(?string $userName): self
     {
         $this->userName = $userName;
         return $this;

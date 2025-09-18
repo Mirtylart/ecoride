@@ -1,25 +1,85 @@
-            <nav class="header-menu">
-                <ul class="header-button">
-                    <li><a href="{{ path('app_home') }}"><button>Accueil</button></a></li>
-                    <!--<li><a href="{{ path('app_account') }}"><button>Covoiturages</button></a></li>--!>
-                    <!--<li><a href="#contact-menu"><button>Contact</button></a></li>--!>
-                    {% if app.user %}
-                        <li><a href="{{ path('app_account') }}"><button>Mon Compte</button></a></li>
-                        <li><a href="{{ path('app_logout') }}"><button>Se déconnecter</button></a></li>
-                    {% else %}
-                        <li><a href="{{ path('app_login') }}"><button>Connexion</button></a></li>
-                    {% endif %}
-                    <li><a href="{{ path('user_history') }}"><button>Historique</button></a></li>
+<header>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary sticky-top">
+        <div class="container-fluid">
 
-                    {% if is_granted('ROLE_EMPLOYE') %}
-                        <li><a href="{{ path('app_review') }}"><button>Employé</button></a></li>
-                    {% endif %}
-                    {% if is_granted('ROLE_ADMIN') %}
-                        <li><a href="{{ path('admin_dashboard') }}"><button>Administrateur</button></a></li>
-                    {% endif %}
-                    {% if is_granted('ROLE_CHAUFFEUR') %}
-                        <li><a href="{{ path('trip_new') }}">Créer un trajet</a></li>
-                    {% endif %}
+        <a class="navbar-brand d-flex align-items-center"
+            href="{{ path('app_home') }}"
+            aria-label="EcoRide Logo">
+            <img src="{{ asset('logo-ecoride.svg') }}"
+                alt="EcoRide"
+                class="logo-ecoride me-2">
+            EcoRide
+        </a>
 
-                </ul>
-            </nav>
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#mainNavbar"
+                aria-controls="mainNavbar"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-center text-center">
+            <li class="nav-item">
+                <a class="nav-link {% if app.request.attributes.get('_route') == 'app_home' %}active{% endif %}"
+                href="{{ path('app_home') }}"
+                aria-current="page">Accueil</a>
+            </li>
+
+            {% if app.user %}
+                <li class="nav-item"><a class="nav-link" href="{{ path('app_account') }}">Mon Compte</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ path('app_logout') }}">Se déconnecter</a></li>
+            {% else %}
+                <li class="nav-item"><a class="nav-link" href="{{ path('app_login') }}">Connexion</a></li>
+            {% endif %}
+
+            <li class="nav-item"><a class="nav-link" href="{{ path('user_history') }}">Historique</a></li>
+
+            {% if is_granted('ROLE_EMPLOYE') %}
+                <li class="nav-item"><a class="nav-link" href="{{ path('app_employe') }}">Employé</a></li>
+            {% endif %}
+
+            {% if is_granted('ROLE_ADMIN') %}
+                <li class="nav-item"><a class="nav-link" href="{{ path('admin_dashboard') }}">Administrateur</a></li>
+            {% endif %}
+
+            {% if is_granted('ROLE_CHAUFFEUR') %}
+                <li class="nav-item"><a class="nav-link" href="{{ path('trip_new') }}">Créer un trajet</a></li>
+            {% endif %}
+            </ul>
+
+            <form class="d-flex align-items-center gap-2 search-bubble-form"
+                role="search"
+                action="{{ path('trip_list') }}"
+                method="get">
+
+            <div class="search-bubble-group">
+                <input class="form-control search-bubble-input"
+                    type="text"
+                    name="search_trip[villeDepart]"
+                    placeholder="Départ"
+                    required>
+                <input class="form-control search-bubble-input"
+                    type="text"
+                    name="search_trip[villeArrivee]"
+                    placeholder="Arrivée"
+                    required>
+                <input class="form-control search-bubble-input"
+                    type="date"
+                    name="search_trip[dateDepart]"
+                    required
+                    min="{{ 'now'|date('Y-m-d') }}">
+            </div>
+
+            <button class="btn search-bubble-btn" type="submit">
+                <i class="fas fa-search"></i>
+                <span class="ms-1">Rechercher</span>
+            </button>
+            </form>
+        </div>
+        </div>
+    </nav>
+</header>

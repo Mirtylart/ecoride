@@ -5,37 +5,49 @@
 {% block body %}
     {% include 'security/menu.html.twig' %}
 
-    <h1>Mon historique</h1>
+    <section class="historique-section">
+        <h1 class="historique-title">Mon historique</h1>
 
-    <h2>En tant que passager</h2>
-    {% if participations is empty %}
-        <p>Vous n’avez réservé aucun trajet.</p>
-    {% else %}
-        <ul>
-            {% for p in participations %}
-                <li>
-                    {{ p.trip.villeDepart }} → {{ p.trip.villeArrivee }}
-                    le {{ p.trip.dateDepart|date('d/m/Y H:i') }}
-                    — Statut: {{ p.statut }}
-                </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+        <div class="historique-group">
+            <h2 class="historique-subtitle">En tant que passager</h2>
+            {% if participations is empty %}
+                <p class="historique-empty">Vous n’avez réservé aucun trajet.</p>
+            {% else %}
+                <ul class="historique-list">
+                    {% for p in participations %}
+                        <li class="historique-item">
+                            {{ p.trip.villeDepart }} → {{ p.trip.villeArrivee }}
+                            le {{ p.trip.dateDepart|date('d/m/Y H:i') }}
+                            — Statut: {{ p.statut }}
+                            <a class="form-button historique-btn" href="{{ path('review_new', {'tripId': p.trip.id}) }}">
+                                Laisser un avis
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
 
-    {%if is_granted('ROLE_CHAUFFEUR')%}
-        <h2>En tant que chauffeur</h2>
-        {% if trips is empty %}
-            <p>Vous n’avez organisé aucun trajet.</p>
-        {% else %}
-            <ul>
-                {% for t in trips %}
-                    <li>
-                        {{ t.villeDepart }} → {{ t.villeArrivee }}
-                        le {{ t.dateDepart|date('d/m/Y H:i') }}
-                        — Statut: {{ t.status }}
-                    </li>
-                {% endfor %}
-            </ul>
+        {% if is_granted('ROLE_CHAUFFEUR') %}
+            <div class="historique-group">
+                <h2 class="historique-subtitle">En tant que chauffeur</h2>
+                {% if trips is empty %}
+                    <p class="historique-empty">Vous n’avez organisé aucun trajet.</p>
+                {% else %}
+                    <ul class="historique-list">
+                        {% for t in trips %}
+                            <li class="historique-item">
+                                {{ t.villeDepart }} → {{ t.villeArrivee }}
+                                le {{ t.dateDepart|date('d/m/Y H:i') }}
+                                — Statut: {{ t.status }}
+                                <a class="form-button historique-btn" href="{{ path('review_new', {'tripId': t.id}) }}">
+                                    Voir les avis
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
         {% endif %}
-    {% endif %}
+    </section>
 {% endblock %}

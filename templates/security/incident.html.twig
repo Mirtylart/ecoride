@@ -1,0 +1,27 @@
+<h1>Incidents en attente</h1>
+
+<table class="table table-warning">
+    <thead>
+        <tr>
+            <th>Passager</th>
+            <th>Chauffeur</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for i in incidents|default([]) %}
+            <tr>
+                <td>{{ i.userEmail }}</td>
+                <td>{{ i.driverId }}</td>
+                <td>{{ i.incidentDescription }}</td>
+                <td>
+                    <a href="{{ path('app_incident_traiter', {id: i.id}) }}" class="btn btn-success btn-sm">Marquer traité</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="4">Aucun incident en attente</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+

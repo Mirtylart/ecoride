@@ -1,0 +1,14 @@
+
+    <h1 class="incident-title">Signaler un incident</h1>
+
+    {{ form_start(form, {'attr': {'class': 'incident-form'}}) }}
+        {{ form_errors(form) }}
+
+
+        <div class="form-group">
+            {{ form_row(form.incidentDescription) }}
+        </div>
+
+        <button class="form-button">Envoyer</button>
+    {{ form_end(form) }}
+

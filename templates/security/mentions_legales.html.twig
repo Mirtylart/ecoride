@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mentions légales{% endblock %}
+
+{% block body %}
+    {% include 'security/menu.html.twig' %}
+    <h1>Mentions légales</h1>
+
+    <p>Conformément à la loi, voici les informations légales concernant ce site :</p>
+
+    <h2>Éditeur du site</h2>
+    <p>EcoRide<br>
+    Adresse complète<br>
+    Téléphone : 01 23 45 67 89<br>
+    Email : contact@EcoRide.com</p>
+
+    <h2>Hébergement</h2>
+    <p>Nom de l’hébergeur<br>
+    Adresse complète<br>
+    Téléphone</p>
+
+    <h2>Propriété intellectuelle</h2>
+    <p>Le contenu de ce site (textes, images, logo, etc.) est protégé par le droit d’auteur.  
+    Toute reproduction sans autorisation est interdite.</p>
+
+    <h2>Données personnelles</h2>
+    <p>Les données collectées via le formulaire de contact sont uniquement utilisées pour répondre aux demandes des utilisateurs.  
+    Aucune donnée n’est transmise à des tiers.</p>
+{% endblock %}

@@ -12,19 +12,21 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_EMPLOYE')]
 class EmployeController extends AbstractController
 {
-    #[Route('/employe', name: 'app_employe_dashboard')]
+    #[Route('/employe', name: 'app_employe')]
     public function dashboard(DocumentManager $dm): Response
     {
-        // Avis en attente
+        // Récupérer les reviews et incidents en attente
         $reviews = $dm->getRepository(Review::class)->findBy(['etat' => 'en_attente']);
-
-        // Incidents en attente
         $incidents = $dm->getRepository(Review::class)->findBy([
             'etat' => 'en_attente',
             'isIncident' => true,
         ]);
 
-        return $this->render('employe/dashboard.html.twig', [
+        // Filtrer uniquement les reviews avec les champs obligatoires initialisés
+        $reviews = array_filter($reviews, fn($r) => $r->getDriverId() && $r->getUserEmail());
+        $incidents = array_filter($incidents, fn($r) => $r->getDriverId() && $r->getUserEmail());
+
+        return $this->render('security/employe.html.twig', [
             'reviews' => $reviews,
             'incidents' => $incidents,
         ]);
@@ -42,7 +44,7 @@ class EmployeController extends AbstractController
         $dm->flush();
 
         $this->addFlash('success', 'Avis validé avec succès.');
-        return $this->redirectToRoute('app_employe_dashboard');
+        return $this->redirectToRoute('app_employe');
     }
 
     #[Route('/employe/review/{id}/refuser', name: 'app_review_refuser')]
@@ -57,7 +59,7 @@ class EmployeController extends AbstractController
         $dm->flush();
 
         $this->addFlash('danger', 'Avis refusé.');
-        return $this->redirectToRoute('app_employe_dashboard');
+        return $this->redirectToRoute('app_employe');
     }
 
     #[Route('/employe/incident/{id}/traiter', name: 'app_incident_traiter')]
@@ -72,6 +74,6 @@ class EmployeController extends AbstractController
         $dm->flush();
 
         $this->addFlash('success', 'Incident marqué comme traité.');
-        return $this->redirectToRoute('app_employe_dashboard');
+        return $this->redirectToRoute('app_employe');
     }
 }

@@ -1,75 +1,84 @@
-
 {% extends 'base.html.twig' %}
 
 {% block title %}Mes véhicules{% endblock %}
 
 {% block body %}
+{% if is_granted("ROLE_CHAUFFEUR") %}
     {% include 'security/menu.html.twig' %}
+
     <h1>Mes véhicules</h1>
 
-    <h2>Ajouter un véhicule</h2>
-    {{ form_start(form) }}
-        {{ form_row(form.marque) }}
-        {{ form_row(form.modele) }}
-        {{ form_row(form.immatriculation) }}
-        {{ form_row(form.fuelType) }}
-        {{ form_row(form.nbPlaces) }}
-        {{ form_row(form.dateImmat) }}
-        {{ form_row(form.fumeur) }}
-        {{ form_row(form.animaux) }}
-        {{ form_row(form.preferences) }}
-        <button>Ajouter</button>
-    {{ form_end(form) }}
+    <section class="vehicule-form">
+        <h2>Ajouter un véhicule</h2>
+        {{ form_start(form) }}
+            {{ form_row(form.marque) }}
+            {{ form_row(form.modele) }}
+            {{ form_row(form.immatriculation) }}
+            {{ form_row(form.fuelType) }}
+            {{ form_row(form.nbPlaces) }}
+            {{ form_row(form.dateImmat) }}
+            {{ form_row(form.fumeur) }}
+            {{ form_row(form.animaux) }}
+            {{ form_row(form.preferences) }}
+            <button type="submit">Ajouter</button>
+        {{ form_end(form) }}
+    </section>
 
-    <h2>Mes véhicules enregistrés</h2>
-    {% if vehicules is not empty %}
-        <table>
-            <thead>
-                <tr>
-                    <th>Marque</th>
-                    <th>Modèle</th>
-                    <th>Immatriculation</th>
-                    <th>Carburant</th>
-                    <th>Places</th>
-                    <th>Date immatriculation</th>
-                    <th>Préférences</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for vehicule in vehicules %}
-                <tr>
-                    <td>{{ vehicule.marque }}</td>
-                    <td>{{ vehicule.modele }}</td>
-                    <td>{{ vehicule.immatriculation }}</td>
-                    <td>{{ vehicule.fuelType }}</td>
-                    <td>{{ vehicule.nbPlaces }}</td>
-                    <td>{{ vehicule.dateImmat ? vehicule.dateImmat|date('d/m/Y') : '' }}</td>
-                    <td>
-                    {% set liste_preferences = vehicule.preferences ? vehicule.preferences|split('\n') : [] %}
+    <section class="vehicule-list">
+        <h2>Mes véhicules enregistrés</h2>
 
-                    {% if liste_preferences is not empty %}
-                        <ul>
-                            {% for pref in liste_preferences %}
-                                <li>{{ pref }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p>Aucune préférence</p>
-                    {% endif %}
-                    </td>
-                    <td>
-                        <a href="{{ path('vehicule_edit', {id: vehicule.id}) }}">Modifier</a>
-                        <form method="post" action="{{ path('vehicule_delete', {id: vehicule.id}) }}" onsubmit="return confirm('Supprimer ce véhicule ?');">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ vehicule.id) }}">
-                            <button>Supprimer</button>
-                        </form>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>Aucun véhicule enregistré.</p>
-    {% endif %}
+        {% if vehicules is not empty %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Marque</th>
+                        <th>Modèle</th>
+                        <th>Immatriculation</th>
+                        <th>Carburant</th>
+                        <th>Places</th>
+                        <th>Date immatriculation</th>
+                        <th>Préférences</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for vehicule in vehicules %}
+                        <tr>
+                            <td>{{ vehicule.marque }}</td>
+                            <td>{{ vehicule.modele }}</td>
+                            <td>{{ vehicule.immatriculation }}</td>
+                            <td>{{ vehicule.fuelType }}</td>
+                            <td>{{ vehicule.nbPlaces }}</td>
+                            <td>{{ vehicule.dateImmat ? vehicule.dateImmat|date('d/m/Y') : '' }}</td>
+                            <td>
+                                {% set prefs = vehicule.preferences ? vehicule.preferences|split('\n') : [] %}
+                                {% if prefs is not empty %}
+                                    <ul>
+                                        {% for pref in prefs %}
+                                            <li>{{ pref }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <em>Aucune préférence</em>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ path('vehicule_edit', { id: vehicule.id }) }}">Modifier</a>
+                                <form method="post"
+                                      action="{{ path('vehicule_delete', { id: vehicule.id }) }}"
+                                      onsubmit="return confirm('Supprimer ce véhicule ?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ vehicule.id) }}">
+                                    <button type="submit">Supprimer</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Aucun véhicule enregistré.</p>
+        {% endif %}
+    </section>
+{% endif %}
 {% endblock %}

@@ -5,83 +5,73 @@
 {% block body %}
     {% include 'security/menu.html.twig' %}
 
-    <h1>Détails du trajet</h1>
-    <h2>{{ trip.villeDepart }} → {{ trip.villeArrivee }}</h2>
+    <section class="trip-details-section">
+        <h1 class="trip-title">Détails du trajet</h1>
+        <h2 class="trip-subtitle">{{ trip.villeDepart }} → {{ trip.villeArrivee }}</h2>
 
-    <ul>
-        <li><strong>Date et heure :</strong> {{ trip.dateDepart ? trip.dateDepart|date('d/m/Y H:i') : 'Non défini' }}</li>
-        <li><strong>Places disponibles :</strong> {{ trip.placesDispo }}</li>
-        <li><strong>Prix :</strong> {{ trip.prix }} crédits</li>
-    </ul>
-
-    <h3>Chauffeur</h3>
-    {% set chauffeur = trip.driver %}
-    <ul>
-        <li><strong>Nom :</strong> {{ chauffeur ? chauffeur.username : 'Non défini' }}</li>
-    </ul>
-
-    <h3>Véhicule</h3>
-    {% set vehicule = trip.vehicule %}
-    <ul>
-        <li><strong>Marque :</strong> {{ vehicule ? vehicule.marque : 'Non défini' }}</li>
-        <li><strong>Modèle :</strong> {{ vehicule ? vehicule.modele : 'Non défini' }}</li>
-        <li><strong>Couleur :</strong> {{ vehicule ? vehicule.couleur : 'Non défini' }}</li>
-        <li><strong>Carburant :</strong> {{ vehicule ? vehicule.fuelType : 'Non défini' }}</li>
-        <li><strong>Immatriculation :</strong> {{ vehicule ? vehicule.immatriculation : 'Non défini' }}</li>
-    </ul>
-    <h3>Passagers</h3>
-    
-    {% if trip.participations is empty %}
-        <p>Aucun passager pour le moment.</p>
-    {% else %}
-        <ul>
-            {% for participation in trip.participations %}
-                <li>
-                    {{ participation.user.username }} 
-                    — Réservé le {{ participation.dateParticipation|date('d/m/Y H:i') }}
-                    — Statut : {{ participation.statut }}
-                </li>
-            {% endfor %}
+        <ul class="trip-info">
+            <li><strong>Date et heure :</strong> {{ trip.dateDepart ? trip.dateDepart|date('d/m/Y H:i') : 'Non défini' }}</li>
+            <li><strong>Places disponibles :</strong> {{ trip.placesDispo }}</li>
+            <li><strong>Prix :</strong> {{ trip.prix }} crédits</li>
         </ul>
-    {% endif %}
-    {% set dejaInscrit = false %}
 
-    {% for participation in trip.participations %}
-        {% if participation.user.id == app.user.id %}
-            {% set dejaInscrit = true %}
-        {% endif %}
-    {% endfor %}
-    {% if app.user %}
-        {% if dejaInscrit %}
-            <p class="text-warning">Vous avez déjà réservé ce trajet.</p>
+        <h3>Chauffeur</h3>
+        {% set chauffeur = trip.driver %}
+        <ul class="trip-info">
+            <li><strong>Nom :</strong> {{ chauffeur ? chauffeur.username : 'Non défini' }}</li>
+        </ul>
+
+        <h3>Véhicule</h3>
+        {% set vehicule = trip.vehicule %}
+        <ul class="trip-info">
+            <li><strong>Marque :</strong> {{ vehicule ? vehicule.marque : 'Non défini' }}</li>
+            <li><strong>Modèle :</strong> {{ vehicule ? vehicule.modele : 'Non défini' }}</li>
+            <li><strong>Couleur :</strong> {{ vehicule ? vehicule.couleur : 'Non défini' }}</li>
+            <li><strong>Carburant :</strong> {{ vehicule ? vehicule.fuelType : 'Non défini' }}</li>
+            <li><strong>Immatriculation :</strong> {{ vehicule ? vehicule.immatriculation : 'Non défini' }}</li>
+        </ul>
+
+        <h3>Passagers</h3>
+        {% if trip.participations is empty %}
+            <p>Aucun passager pour le moment.</p>
         {% else %}
-            <a href="{{ path('trip_reserve', {id: trip.id}) }}" class="btn btn-primary">
-                Réserver ce trajet
-            </a>
+            <ul class="trip-passengers">
+                {% for participation in trip.participations %}
+                    <li>{{ participation.user.username }} — Réservé le {{ participation.dateParticipation|date('d/m/Y H:i') }} — Statut : {{ participation.statut }}</li>
+                {% endfor %}
+            </ul>
         {% endif %}
-    {% else %}
-        <p>
-            <a href="{{ path('app_login') }}">Connectez-vous</a> pour réserver ce trajet.
-        </p>
-    {% endif %}
-    
-    {% if app.user and app.user.id == trip.driver.id %}
-        <h3>Actions chauffeur</h3>
 
-        {% if trip.status == 'prévu' %}
-            <a href="{{ path('trip_start', {id: trip.id}) }}" class="btn btn-success">Démarrer</a>
-            <a href="{{ path('trip_cancel_trip', {id: trip.id}) }}" class="btn btn-danger">Annuler</a>
-        {% elseif trip.status == 'démarré' %}
-            <a href="{{ path('trip_end', {id: trip.id}) }}" class="btn btn-primary">Terminer</a>
-        {% endif %}
-    {% endif %}
+        {% set dejaInscrit = false %}
+        {% for participation in trip.participations %}
+            {% if app.user and participation.user.id == app.user.id %}
+                {% set dejaInscrit = true %}
+            {% endif %}
+        {% endfor %}
 
-    {% if dejaInscrit %}
-        <a href="{{ path('trip_cancel', {id: trip.id}) }}" class="btn btn-danger">
-            Annuler ma réservation
-        </a>
-    {% endif %}
-    <p>
-        <a href="{{ path('trip_list') }}"> - Retour à la liste des trajets</a>
-    </p>
+        <div class="trip-actions">
+            {% if app.user %}
+                {% if dejaInscrit %}
+                    <p class="text-warning">Vous avez déjà réservé ce trajet.</p>
+                    <a href="{{ path('trip_cancel', {id: trip.id}) }}" class="btn btn-danger">Annuler ma réservation</a>
+                {% elseif not is_granted('ROLE_CHAUFFEUR') %}
+                    <a href="{{ path('trip_reserve', {id: trip.id}) }}" class="btn btn-primary">Réserver ce trajet</a>
+                {% endif %}
+            {% else %}
+                <p><a href="{{ path('app_login') }}">Connectez-vous</a> pour réserver ce trajet.</p>
+            {% endif %}
+
+            {% if app.user and app.user.id == trip.driver.id %}
+                <h3>Actions chauffeur</h3>
+                {% if trip.status == 'prévu' %}
+                    <a href="{{ path('trip_start', {id: trip.id}) }}" class="btn btn-success">Démarrer</a>
+                    <a href="{{ path('trip_cancel_trip', {id: trip.id}) }}" class="btn btn-danger">Annuler</a>
+                {% elseif trip.status == 'démarré' %}
+                    <a href="{{ path('trip_end', {id: trip.id}) }}" class="btn btn-primary">Terminer</a>
+                {% endif %}
+            {% endif %}
+        </div>
+
+        <p class="back-link"><a href="{{ path('trip_list') }}">← Retour à la liste des trajets</a></p>
+    </section>
 {% endblock %}

@@ -1,0 +1,46 @@
+<div class="espacement"></div>
+<footer class="footer">
+
+    <div class="container">
+        <div class="row text-center text-md-start">
+            
+            <!-- Colonne gauche -->
+            <div class="col-md-4 mb-4">
+                <p class="mb-1">© {{ "now"|date("Y") }} - Tous droits réservés</p>
+                <p class="eco-reminder">
+                    <i class="bi bi-tree-fill"></i> Pensez à réduire votre empreinte carbone
+                </p>
+            </div>
+
+            <!-- Colonne navigation -->
+            <div class="col-md-4 mb-4">
+                <h5 class="footer-title mb-3">Navigation</h5>
+                <ul class="list-unstyled">
+                    <li><a href="{{ path('app_home') }}" class="footer-link">Accueil</a></li>
+                    <li><a href="{{ path('contact') }}" class="footer-link">Contact</a></li>
+                    <li><a href="{{ path('mentions_legales') }}" class="footer-link">Mentions légales</a></li>
+                </ul>
+            </div>
+
+            <!-- Colonne réseaux sociaux -->
+            <div class="col-md-4 mb-4">
+                <h5 class="footer-title mb-3">Suivez-nous</h5>
+                <div class="d-flex justify-content-center justify-content-md-start gap-3">
+                    <a href="https://www.linkedin.com/in/adrien-kahn-12737721b" 
+                       class="social-link" aria-label="LinkedIn">
+                        <i class="bi bi-linkedin">LinkedIn</i>
+                    </a>
+                    <a href="https://adrien_kahn98.artstation.com" 
+                       class="social-link" aria-label="Artstation">
+                        <i class="bi bi-brush">Artstation</i>
+                    </a>
+                    <a href="https://www.instagram.com/mirtyl.art" 
+                       class="social-link" aria-label="Instagram">
+                        <i class="bi bi-instagram">Instagram</i>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</footer>

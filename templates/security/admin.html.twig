@@ -3,112 +3,102 @@
 {% block title %}Espace Administrateur{% endblock %}
 
 {% block body %}
-{% include 'security/menu.html.twig' %}
+    {% include 'security/menu.html.twig' %}
+    {%if is_granted("ROLE_ADMIN") %}
+        <section class="admin-section">
+            <h1 class="admin-title">Espace Administrateur</h1>
 
-<h1>Espace Administrateur</h1>
+            <div class="flash-messages">
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <p class="flash-{{ label }}">{{ message }}</p>
+                    {% endfor %}
+                {% endfor %}
+            </div>
 
-{# Messages flash #}
-{% for label, messages in app.flashes %}
-    {% for message in messages %}
-        <p>[{{ label }}] {{ message }}</p>
-    {% endfor %}
-{% endfor %}
+            <hr>
 
-<hr>
+            <section class="admin-employes">
+                <h2>Gestion des Employés</h2>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Email</th>
+                            <th>Rôle</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in employes %}
+                            <tr>
+                                <td>{{ user.id }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.roles|join(', ') }}</td>
+                                <td>
+                                    {% if 'ROLE_EMPLOYE' not in user.roles %}
+                                        <a href="{{ path('admin_role_employe', {id: user.id}) }}" class="btn btn-sm btn-primary">Promouvoir Employé</a>
+                                    {% else %}
+                                        <a href="{{ path('admin_remove_role_employe', {id: user.id}) }}" class="btn btn-sm btn-warning">Retirer Employé</a>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if user.isSuspended %}
+                                        <span class="status-suspended">Suspendu</span>
+                                        <a href="{{ path('admin_reactiver', {id: user.id}) }}" class="btn btn-sm btn-success">Réactiver</a>
+                                    {% else %}
+                                        <span class="status-active">Actif</span>
+                                        <a href="{{ path('admin_suspendre', {id: user.id}) }}" class="btn btn-sm btn-danger">Suspendre</a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="5">Aucun employé trouvé</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
 
-<h2>Gestion des Employés</h2>
-<table border="1" cellspacing="0" cellpadding="4">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Email</th>
-            <th>Rôle</th>
-            <th>Statut</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        
-        {% for user in employes %}
-            <tr>
-                <td>{{ user.id }}</td>
-                <td>{{ user.email }}</td>
-                <td>{{ user.roles|join(', ') }}</td>
-                <td>
-                    {% if 'ROLE_EMPLOYE' not in user.roles %}
-                        <a href="{{ path('admin_role_employe', {id: user.id}) }}" 
-                           class="btn btn-sm btn-primary">
-                            Promouvoir Employé
-                        </a>
+            <hr>
+
+            <section class="admin-reviews">
+                <h2>Reviews en attente</h2>
+                <ul>
+                    {% for r in reviews %}
+                        <li>{{ r.contenu }} (par {{ r.user.email }})</li>
                     {% else %}
-                        <a href="{{ path('admin_remove_role_employe', {id: user.id}) }}" 
-                        class="btn btn-sm btn-warning">
-                            Retirer Employé
-                        </a>
-                    {% endif %}
-                </td>
-            </tr>
-        {% endfor %}
+                        <li>Aucune review en attente</li>
+                    {% endfor %}
+                </ul>
+            </section>
 
-        {% for employe in employes %}
-            <tr>
-                <td>{{ employe.id }}</td>
-                <td>{{ employe.email }}</td>
-                <td>{{ employe.roles|join(', ') }}</td>
-
-                <td>
-                    {% if employe.isSuspended %}
-                        Suspendu
+            <section class="admin-incidents">
+                <h2>Incidents signalés</h2>
+                <ul>
+                    {% for i in incidents %}
+                        <li>{{ i.contenu }} (par {{ i.user.email }})</li>
                     {% else %}
-                        Actif
-                    {% endif %}
-                </td>
-                <td>
-                    {% if employe.isSuspended %}
-                        <a href="{{ path('admin_reactiver', {id: employe.id}) }}">Réactiver</a>
+                        <li>Aucun incident signalé</li>
+                    {% endfor %}
+                </ul>
+            </section>
+
+            <hr>
+
+            <section class="admin-stats">
+                <h2>Statistiques</h2>
+                <p>Covoiturages par mois :</p>
+                <ul>
+                    {% for c in trips %}
+                        <li>Mois {{ c.mois }} : {{ c.total }} trips</li>
                     {% else %}
-                        <a href="{{ path('admin_suspendre', {id: employe.id}) }}">Suspendre</a>
-                    {% endif %}
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">Aucun employé trouvé</td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-<hr>
-
-<h2>Reviews en attente</h2>
-<ul>
-    {% for r in reviews %}
-        <li>{{ r.contenu }} (par {{ r.user.email }})</li>
-    {% else %}
-        <li>Aucune review en attente</li>
-    {% endfor %}
-</ul>
-
-<h2>Incidents signalés</h2>
-<ul>
-    {% for i in incidents %}
-        <li>{{ i.contenu }} (par {{ i.user.email }})</li>
-    {% else %}
-        <li>Aucun incident signalé</li>
-    {% endfor %}
-</ul>
-
-<hr>
-
-<h2>Statistiques</h2>
-<p>Covoiturages par mois :</p>
-<ul>
-    {% for c in trips %}
-        <li>Mois {{ c.mois }} : {{ c.total }} trips</li>
-    {% else %}
-        <li>Aucune donnée disponible</li>
-    {% endfor %}
-</ul>
-
+                        <li>Aucune donnée disponible</li>
+                    {% endfor %}
+                </ul>
+            </section>
+        </section>
+    {%endif%}
 {% endblock %}

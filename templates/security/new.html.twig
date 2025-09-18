@@ -2,21 +2,36 @@
 
 {% block body %}
     {% include 'security/menu.html.twig' %}
-    <h1>Créer un nouveau trajet</h1>
 
-    {{ form_start(form) }}
-        {{ form_errors(form) }}
+    <section class="trajet-section">
+        <h1 class="trajet-title">Créer un nouveau trajet</h1>
 
-        <div class="form-group">
-            {{ form_row(form.villeDepart) }}
-            {{ form_row(form.villeArrivee) }}
-            {{ form_row(form.dateDepart) }}
-            {{ form_row(form.dateArrivee) }}
-            {{ form_row(form.prix) }}
-            {{ form_row(form.placesDispo) }}
-            {{ form_row(form.vehicule) }}
-        </div>
+        {{ form_start(form, {'attr': {'class': 'trajet-form'}}) }}
+            {{ form_errors(form) }}
 
-        <button class="btn btn-success">Créer</button>
-    {{ form_end(form) }}
+            <div class="form-group">
+                {{ form_row(form.villeDepart) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(form.villeArrivee) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(form.dateDepart) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(form.dateArrivee) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(form.prix) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(form.placesDispo) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(form.vehicule) }}
+            </div>
+
+            <button class="form-button">Créer</button>
+        {{ form_end(form) }}
+    </section>
 {% endblock %}

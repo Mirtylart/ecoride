@@ -4,34 +4,39 @@
 
 {% block body %}
     {% include 'security/menu.html.twig' %}
-    
-    {% for flash_error in app.flashes('verify_email_error') %}
-        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-    {% endfor %}
 
-    <h1>Compte</h1>
+    <section class="account-section">
+        {% for flash_error in app.flashes('verify_email_error') %}
+            <div class="alert alert-danger">{{ flash_error }}</div>
+        {% endfor %}
 
-    {% if app.user %}
-        <p>Connecté en tant que : {{ app.user.username }}</p>
-    {% else %}
-        <p>Vous n’êtes pas connecté.</p>
-    {% endif %}
+        <h1 class="account-title">Compte</h1>
 
-    {{ form_start(form) }}
-        {{ form_row(form.username) }}
-        {{ form_row(form.email) }}
-        {{ form_row(form.plainPassword, {
-            label: 'Mot de passe :'
-        }) }}
-        
-        {{ form_label(form.roles) }}
-        {{ form_widget(form.roles, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(form.roles) }}
+        {% if app.user %}
+            <p class="account-info">Connecté en tant que : {{ app.user.username }}</p>
+        {% else %}
+            <p class="account-info">Vous n’êtes pas connecté.</p>
+        {% endif %}
 
-        <button type="submit" class="btn btn-primary">Enregistrer</button>
-    {{ form_end(form) }}
-    {% if is_granted('ROLE_CHAUFFEUR')%}
-        <h2>Mes véhicules</h2>
-        <a href="{{ path('vehicule_index') }}" class="btn btn-secondary">Gérer mes véhicules</a>
-    {% endif %}
+        <form class="account-form">
+            {{ form_start(form) }}
+                {{ form_row(form.username) }}
+                {{ form_row(form.email) }}
+                {{ form_row(form.plainPassword, { label: 'Mot de passe :' }) }}
+
+                <div class="form-group">
+                    {{ form_label(form.roles) }}
+                    {{ form_widget(form.roles, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.roles) }}
+                </div>
+
+                <button type="submit" class="form-button">Enregistrer</button>
+            {{ form_end(form) }}
+        </form>
+
+        {% if is_granted('ROLE_CHAUFFEUR') %}
+            <h2 class="account-vehicles-title">Mes véhicules</h2>
+            <a href="{{ path('vehicule_index') }}" class="btn btn-secondary account-vehicles-btn">Gérer mes véhicules</a>
+        {% endif %}
+    </section>
 {% endblock %}

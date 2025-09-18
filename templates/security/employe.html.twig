@@ -17,15 +17,15 @@
             </tr>
         </thead>
         <tbody>
-            {% for a in reviews %}
+            {% for review in reviews %}
                 <tr>
-                    <td>{{ a.reviewer.username }}</td>
-                    <td>{{ a.driver.username }}</td>
-                    <td>{{ a.note }}</td>
-                    <td>{{ a.commentaire }}</td>
+                    <td>{{ review.userEmail }}</td>
+                    <td>{{ review.driverId}}</td>
+                    <td>{{ review.note }}</td>
+                    <td>{{ review.commentaire }}</td>
                     <td>
-                        <a href="{{ path('app_reviews_valider', {id: a.id}) }}" class="btn btn-success btn-sm">Valider</a>
-                        <a href="{{ path('app_reviews_refuser', {id: a.id}) }}" class="btn btn-danger btn-sm">Refuser</a>
+                        <a href="{{ path('app_review_valider', {id: review.id}) }}" class="btn btn-success btn-sm">Valider</a>
+                        <a href="{{ path('app_review_refuser', {id: review.id}) }}" class="btn btn-danger btn-sm">Refuser</a>
                     </td>
                 </tr>
             {% else %}
@@ -34,33 +34,6 @@
         </tbody>
     </table>
 
-    <h1>Incidents en attente</h1>
-
-    <table class="table table-warning">
-        <thead>
-            <tr>
-                <th>Passager</th>
-                <th>Chauffeur</th>
-                <th>Description</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {# incidents|default([]) évite l'erreur "variable inconnue" #}
-            {% for i in incidents|default([]) %}
-                <tr>
-                    <td>{{ i.reviewer.username }}</td>
-                    <td>{{ i.driver.username }}</td>
-                    <td>{{ i.incidentDescription }}</td>
-                    <td>
-                        <a href="{{ path('app_reviews_valider', {id: i.id}) }}" class="btn btn-success btn-sm">Valider</a>
-                        <a href="{{ path('app_reviews_refuser', {id: i.id}) }}" class="btn btn-danger btn-sm">Refuser</a>
-                    </td>
-                </tr>
-            {% else %}
-                <tr><td colspan="4">Aucun incident en attente</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    {% include 'security/incident.html.twig' %}
 
 {% endblock %}

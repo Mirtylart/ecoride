@@ -1,38 +1,59 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-{% include 'security/menu.html.twig' %}
+    {% include 'security/menu.html.twig' %}
 
-<h1>Rechercher un trajet</h1>
+    <section class="search-section">
+        <h1 class="search-title">Rechercher un trajet</h1>
 
-{{ form_start(form, { method: 'get' }) }}
-    {{ form_row(form.villeDepart) }}
-    {{ form_row(form.villeArrivee) }}
-    {{ form_row(form.dateDepart) }}
-    {{ form_row(form.prixMax) }}
-    {{ form_row(form.placesMin) }}
-    {{ form_row(form.preferences) }}
-    {{ form_row(form.fuelType) }}
-    <button type="submit" class="btn btn-primary">Rechercher</button>
-{{ form_end(form) }}
+        {{ form_start(form, { method: 'get', 'attr': {'class': 'search-form'} }) }}
+            {{ form_errors(form) }}
 
-<h2>Résultats</h2>
-{% if not searchPerformed %}
-    <p>Veuillez lancer une recherche.</p>
-{% elseif trips is empty %}
-    <p>Aucun trajet trouvé.</p>
-{% else %}
-    <ul>
-        {% for trip in trips %}
-            <li>
-                <a href="{{ path('trip_show', {id: trip.id}) }}">
-                    {{ trip.villeDepart }} - {{ trip.villeArrivee }}
-                    — {{ trip.dateDepart ? trip.dateDepart|date('d/m/Y H:i') : 'Date non définie' }}
-                    — {{ trip.prix }} crédits
-                    — Places restantes : {{ trip.placesDispo }}
-                </a>
-            </li>
-        {% endfor %}
-    </ul>
-{% endif %}
+            <div class="form-group">
+                {{ form_row(form.villeDepart) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(form.villeArrivee) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(form.dateDepart) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(form.prixMax) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(form.placesMin) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(form.preferences) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(form.fuelType) }}
+            </div>
+
+            <button type="submit" class="form-button">Rechercher</button>
+        {{ form_end(form) }}
+    </section>
+
+    <section class="search-results">
+        <h2>Résultats</h2>
+        {% if not searchPerformed %}
+            <p>Veuillez lancer une recherche.</p>
+        {% elseif trips is empty %}
+            <p>Aucun trajet trouvé.</p>
+        {% else %}
+            <ul>
+                {% for trip in trips %}
+                    <li class="trip-item">
+                        <a href="{{ path('trip_show', {id: trip.id}) }}">
+                            {{ trip.villeDepart }} → {{ trip.villeArrivee }} — 
+                            {{ trip.dateDepart ? trip.dateDepart|date('d/m/Y H:i') : 'Date non définie' }} — 
+                            {{ trip.prix }} crédits — 
+                            Places restantes : {{ trip.placesDispo }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </section>
 {% endblock %}

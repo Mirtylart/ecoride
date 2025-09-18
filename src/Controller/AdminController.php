@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Document\Review;
 use App\Entity\User;
+use App\Entity\Trip;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,19 +18,15 @@ class AdminController extends AbstractController
     #[Route('/admin', name: 'admin_dashboard')]
     public function dashboard(EntityManagerInterface $em, DocumentManager $dm): Response
     {
-        // Users SQL
         $employes = $em->getRepository(User::class)->findAll();
-
-        // Reviews MongoDB
         $reviews = $dm->getRepository(Review::class)->findBy(['etat' => 'en_attente']);
         $incidents = $dm->getRepository(Review::class)->findBy([
             'etat' => 'en_attente',
             'isIncident' => true,
         ]);
 
-        // Stats Trips SQL
         $conn = $em->getConnection();
-        $sql = "SELECT MONTH(date_depart) as mois, COUNT(*) as total FROM trips GROUP BY mois";
+        $sql = "SELECT MONTH(date_depart) as mois, COUNT(*) as total FROM trip GROUP BY mois";
         $stmt = $conn->prepare($sql);
         $trips = $stmt->executeQuery()->fetchAllAssociative();
 
@@ -107,7 +104,7 @@ class AdminController extends AbstractController
         $roles = $user->getRoles();
         if (in_array('ROLE_EMPLOYE', $roles, true)) {
             $roles = array_filter($roles, fn($role) => $role !== 'ROLE_EMPLOYE');
-            $user->setRoles(array_values($roles)); // réindexer
+            $user->setRoles(array_values($roles));
             $em->flush();
             $this->addFlash('success', 'Le rôle employé a été retiré à cet utilisateur.');
         } else {
@@ -117,7 +114,6 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('admin_dashboard');
     }
 
-    // Exemple : valider une Review MongoDB
     #[Route('/admin/review/valider/{id}', name: 'admin_valider_review')]
     public function validerReview(string $id, DocumentManager $dm): Response
     {
@@ -134,7 +130,6 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('admin_dashboard');
     }
 
-    // Exemple : supprimer une Review MongoDB
     #[Route('/admin/review/supprimer/{id}', name: 'admin_supprimer_review')]
     public function supprimerReview(string $id, DocumentManager $dm): Response
     {
@@ -150,5 +145,4 @@ class AdminController extends AbstractController
         $this->addFlash('success', 'Review supprimée avec succès !');
         return $this->redirectToRoute('admin_dashboard');
     }
-
 }
