@@ -1,42 +1,117 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Account{% endblock %}
+{% block title %}Mon compte{% endblock %}
 
 {% block body %}
     {% include 'security/menu.html.twig' %}
 
     <section class="account-section">
         {% for flash_error in app.flashes('verify_email_error') %}
-            <div class="alert alert-danger">{{ flash_error }}</div>
+            <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
         {% endfor %}
 
-        <h1 class="account-title">Compte</h1>
+        <h1 class="account-title">Espace utilisateur</h1>
 
         {% if app.user %}
-            <p class="account-info">Connecté en tant que : {{ app.user.username }}</p>
+            <p class="account-info">Connecté en tant que : <strong>{{ app.user.username }}</strong></p>
+            <p class="account-info">Email : <strong>{{ app.user.email }}</strong></p>
+            {% if app.user.credits is defined %}
+                <p class="account-info">Crédits : <strong>{{ app.user.credits }}</strong></p>
+            {% endif %}
         {% else %}
             <p class="account-info">Vous n’êtes pas connecté.</p>
         {% endif %}
 
-        <form class="account-form">
-            {{ form_start(form) }}
-                {{ form_row(form.username) }}
-                {{ form_row(form.email) }}
-                {{ form_row(form.plainPassword, { label: 'Mot de passe :' }) }}
+        <h2 class="section-subtitle">Mes informations</h2>
+        
+        {{ form_start(form, {'attr': {'class': 'account-form'}}) }}
+            <div class="form-group">
+                {{ form_row(form.username, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(form.email, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(form.plainPassword, {
+                    label: 'Mot de passe :',
+                    'attr': {'class': 'form-control'}
+                }) }}
+            </div>
+            
+            <div class="form-group">
+                {{ form_label(form.roles) }}
+                {{ form_widget(form.roles, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.roles) }}
+            </div>
 
-                <div class="form-group">
-                    {{ form_label(form.roles) }}
-                    {{ form_widget(form.roles, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.roles) }}
-                </div>
+            <button type="submit" class="btn btn-primary form-button">Enregistrer</button>
+        {{ form_end(form) }}
 
-                <button type="submit" class="form-button">Enregistrer</button>
-            {{ form_end(form) }}
-        </form>
+        {# Section Mes trajets avec sécurité #}
+        {% if app.user and app.user.trips is defined and app.user.trips|length > 0 %}
+            <h2 class="section-subtitle">Mes trajets</h2>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Départ</th>
+                            <th>Arrivée</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for trip in app.user.trips %}
+                            <tr>
+                                <td>{{ trip.villeDepart ?? 'Non spécifié' }}</td>
+                                <td>{{ trip.villeArrivee ?? 'Non spécifié' }}</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a href="{{ path('trip_show', {id: trip.id}) }}" class="btn btn-info btn-sm">Voir</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                <p>Vous n’avez pas encore créé de trajets.</p>
+            </div>
+        {% endif %}
 
+        {# Section Mes réservations avec sécurité #}
+        {% if app.user and app.user.participations is defined and app.user.participations|length > 0 %}
+            <h2 class="section-subtitle">Mes réservations</h2>
+            <div class="reservations-list">
+                <ul class="list-group">
+                    {% for participation in app.user.participations %}
+                        {% if participation.trip is defined %}
+                            <li class="list-group-item reservation-item">
+                                <div class="reservation-details">
+                                    <strong>{{ participation.trip.departure ?? 'Non spécifié' }} → {{ participation.trip.arrival ?? 'Non spécifié' }}</strong>
+                                    <br>
+                                    <small>Le {{ participation.trip.date ? participation.trip.date|date('d/m/Y H:i') : 'Date non définie' }}</small>
+                                    <span class="badge bg-secondary">Statut : {{ participation.statut ?? 'Inconnu' }}</span>
+                                </div>
+                                <a href="{{ path('trip_show', {id: participation.trip.id}) }}" class="btn btn-outline-info btn-sm">Détails</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                <p>Vous n’avez pas encore de réservations.</p>
+            </div>
+        {% endif %}
+
+        {# Section Véhicules #}
         {% if is_granted('ROLE_CHAUFFEUR') %}
-            <h2 class="account-vehicles-title">Mes véhicules</h2>
-            <a href="{{ path('vehicule_index') }}" class="btn btn-secondary account-vehicles-btn">Gérer mes véhicules</a>
+            <h2 class="section-subtitle">Mes véhicules</h2>
+            <div class="vehicle-section">
+                <a href="{{ path('vehicule_index') }}" class="btn btn-secondary">Gérer mes véhicules</a>
+            </div>
         {% endif %}
     </section>
 {% endblock %}

@@ -1,0 +1,15 @@
+nelmio_api_doc:
+  documentation:
+    info:
+      title: 'Ecoride API'
+      description: 'Documentation de l’API Ecoride'
+      version: '1.0.0'
+    servers:
+      - url: http://127.0.0.1:8000
+        description: "Local dev server"
+  areas:
+    path_patterns:
+      - ^/api(?!/doc$)
+  models:
+    use_jms: false
+

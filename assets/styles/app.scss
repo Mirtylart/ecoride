@@ -112,7 +112,7 @@ body {
 
     .vehicule-page {
         max-width: 900px;
-        margin: 50px auto;
+        margin: 25%;
         padding: 2rem;
         font-family: Arial, sans-serif;
         background-color: #f4f6f9;
@@ -303,7 +303,9 @@ body {
     }
 
     .accueil-menu {
-        background-image: url('../../public/Car_forest.png');
+        background: 
+            linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), 
+            url('../../public/Car_forest.png') center/cover no-repeat;
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -345,7 +347,7 @@ body {
 
     .menu_register {
         max-width: 450px;
-        margin: 50px auto;
+        margin: 25%;
         padding: 2rem;
         background: #fff;
         border-radius: 12px;
@@ -524,7 +526,7 @@ body {
 
     .trajet-section {
         max-width: 500px;
-        margin: 50px auto;
+        margin: 25%;
         padding: 2rem;
         background: #fff;
         border-radius: 12px;
@@ -593,7 +595,7 @@ body {
 
     .account-section {
         max-width: 700px;
-        margin: 50px auto;
+        margin: 25%;
         padding: 2rem;
         background: #fff;
         border-radius: 12px;
@@ -647,7 +649,7 @@ body {
 
     .admin-section {
         max-width: 1000px;
-        margin: 50px auto;
+        margin: 25%;
         padding: 2rem;
         background: #f8f9fa;
         border-radius: 12px;
@@ -717,7 +719,7 @@ body {
 
     .incident-section {
         max-width: 500px;
-        margin: 50px auto;
+        margin: 25%;
         padding: 2rem;
         background: #fff;
         border-radius: 12px;
@@ -739,7 +741,7 @@ body {
 
     .review-section {
         max-width: 500px;
-        margin: 50px auto;
+        margin: 25%;
         padding: 2rem;
         background: #fff;
         border-radius: 12px;
@@ -761,7 +763,7 @@ body {
 
     .historique-section {
         max-width: 600px;
-        margin: 50px auto;
+        margin: 25%;
         padding: 2rem;
         background: #fff;
         border-radius: 12px;
@@ -824,7 +826,7 @@ body {
 
     .search-section {
         max-width: 600px;
-        margin: 50px auto;
+        margin: 25%;
         padding: 2rem;
         background: #fff;
         border-radius: 12px;
@@ -867,7 +869,7 @@ body {
 
     .trip-details-section {
         max-width: 700px;
-        margin: 50px auto;
+        margin: 25%;
         padding: 2rem;
         background: #fff;
         border-radius: 12px;

@@ -55,7 +55,34 @@
                     <p class="text-warning">Vous avez déjà réservé ce trajet.</p>
                     <a href="{{ path('trip_cancel', {id: trip.id}) }}" class="btn btn-danger">Annuler ma réservation</a>
                 {% elseif not is_granted('ROLE_CHAUFFEUR') %}
-                    <a href="{{ path('trip_reserve', {id: trip.id}) }}" class="btn btn-primary">Réserver ce trajet</a>
+                    <!-- Bouton qui ouvre la modal -->
+                    <button type="button" class="btn btn-primary" id="btn-reserver">
+                        Réserver ce trajet
+                    </button>
+
+                    <!-- Modal Bootstrap -->
+                    <div class="modal fade" id="reservationModal" tabindex="-1" aria-labelledby="reservationLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="reservationLabel">Confirmation de réservation</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Êtes-vous sûr de vouloir réserver ce trajet de 
+                                    <strong>{{ trip.villeDepart }}</strong> à 
+                                    <strong>{{ trip.villeArrivee }}</strong> ?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                    <form method="post" action="{{ path('trip_reserve', {id: trip.id}) }}">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('reserve' ~ trip.id) }}">
+                                        <button type="submit" class="btn btn-success">Confirmer</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 {% endif %}
             {% else %}
                 <p><a href="{{ path('app_login') }}">Connectez-vous</a> pour réserver ce trajet.</p>
@@ -74,4 +101,19 @@
 
         <p class="back-link"><a href="{{ path('trip_list') }}">← Retour à la liste des trajets</a></p>
     </section>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const btn = document.getElementById("btn-reserver");
+      const modalEl = document.getElementById("reservationModal");
+
+      if (btn && modalEl) {
+        const modal = new bootstrap.Modal(modalEl);
+
+        btn.addEventListener("click", function () {
+          modal.show();
+        });
+      }
+    });
+    </script>
 {% endblock %}

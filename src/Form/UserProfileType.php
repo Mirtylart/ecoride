@@ -38,6 +38,7 @@ class UserProfileType extends AbstractType
                 ],
                 'multiple' => true,
                 'expanded' => false,
+                'label' => 'Rôles',
             ]);
 
         

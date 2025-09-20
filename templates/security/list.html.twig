@@ -46,7 +46,7 @@
                 {% for trip in trips %}
                     <li class="trip-item">
                         <a href="{{ path('trip_show', {id: trip.id}) }}">
-                            {{ trip.villeDepart }} → {{ trip.villeArrivee }} — 
+                            {{ trip.villeDepart }} — {{ trip.villeArrivee }} — 
                             {{ trip.dateDepart ? trip.dateDepart|date('d/m/Y H:i') : 'Date non définie' }} — 
                             {{ trip.prix }} crédits — 
                             Places restantes : {{ trip.placesDispo }}

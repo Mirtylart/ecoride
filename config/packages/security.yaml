@@ -23,9 +23,11 @@ security:
             remember_me:
                 secret: '%kernel.secret%'
 
-    access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+    access_control :
+         - { path : ^/api/registration, roles : PUBLIC_ACCESS }
+         - { path : ^/api/login, roles : PUBLIC_ACCESS }
+         - { path : ^/api/doc, roles : PUBLIC_ACCESS }
+         - { path : ^/api, roles : ROLE_USER }
 
 
 when@test:
